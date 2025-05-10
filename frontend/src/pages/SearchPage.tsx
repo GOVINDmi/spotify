@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState} from "react";
 import { useSongData } from "../context/SongContext"; // Adjust the import according to your structure
 import Layout from "../components/Layout"; // Adjust the import according to your structure
 import { FaBookmark, FaPlay } from "react-icons/fa";
@@ -6,14 +6,14 @@ import { useUserData } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 const SearchPage: React.FC = () => {
-  const { songs, albums, fetchSongs, fetchAlbums,setIsPlaying,setSelectedSong,isPlaying} = useSongData();
-   const { playlists, addSongToPlaylist,isAuth } = useUserData();
+  const { songs, albums, fetchSongs, fetchAlbums,setIsPlaying,setSelectedSong} = useSongData();
+   const { playlists, addSongToPlaylist} = useUserData();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredSongs, setFilteredSongs] = useState(songs);
   const [filteredAlbums, setFilteredAlbums] = useState(albums);
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
   const [showMenuFor, setShowMenuFor] = useState<string | null>(null);
-    const [showMenu, setShowMenu] = useState(false);
+    //const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 
   // Fetch songs and albums when page loads

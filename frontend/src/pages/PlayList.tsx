@@ -7,7 +7,7 @@ import { FaBookmark, FaPlay } from "react-icons/fa";
 import Loading from "../components/Loading";
 
 const PlayList: React.FC = () => {
-  const { songs, setIsPlaying, setSelectedSong, loading,isPlaying } = useSongData();
+  const { songs, setIsPlaying, setSelectedSong, loading} = useSongData();
   const { playlists, addSongToPlaylist } = useUserData();
 
   // get playlistId from URL
