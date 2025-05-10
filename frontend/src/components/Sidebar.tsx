@@ -1,10 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import PlayListCard from "./PlayListCard";
 import { useUserData } from "../context/UserContext";
+import { useState } from "react";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const { user } = useUserData();
+  const { playlists, createPlaylist,isAuth } = useUserData();
+  const [newName, setNewName] = useState("");
+
+  const handleCreate = () => {
+    if(!isAuth)
+    {
+      navigate("/login");
+      return;
+
+    }
+    if (newName.trim()) {
+      createPlaylist(newName);
+      setNewName("");
+    }
+  };
   return (
     <div className="w-[25%] h-full p-2 flex-col gap-2 text-white hidden lg:flex">
       <div className="bg-[#121212] h-[15%] rounded flex flex-col justify-around">
@@ -29,14 +45,31 @@ const Sidebar = () => {
             <img src="/stack.png" className="w-8" alt="" />
             <p className="font-semibold">Your Library</p>
           </div>
-          <div className="flex items-center gap-3">
-            <img src="/arrow.png" className="w-8" alt="" />
-            <img src="/plus.png" className="w-8" alt="" />
+          <div className="pl-4 flex  items-center gap-3">
+           
+            <div className="flex items-center gap-3 px-4 cursor-pointer" onClick={handleCreate}>
+                <img src="/plus.png" className="w-6" alt="new" />
+                <input
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="New playlist"
+                  className="bg-transparent focus:outline-none text-white"
+                />
+              </div>
           </div>
         </div>
-        <div onClick={() => navigate("/playlist")}>
-          <PlayListCard />
+        <div>
+      {playlists.map((pl) => (
+        <div
+          key={pl._id}
+          onClick={() => navigate(`/playlist/${pl._id}`)}
+          className="cursor-pointer mb-2"
+        >
+          <PlayListCard playlist={pl} />
         </div>
+      ))}
+    </div>
+        
 
         <div className="p-4 m-2 bg-[#121212] rounded font-semibold flex flex-col items-start gap-1 pl-4 mt-4">
           <h1>Let's findsome podcasts to follow</h1>

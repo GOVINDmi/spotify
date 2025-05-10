@@ -34,7 +34,6 @@ export const isAuth = async (
     const userId = decodedValue._id;
     console.log(userId);
     const user = await User.findById(userId);
-    console.log(user);
 
     if (!user) {
       res.status(403).json({ message: "User Not found" });

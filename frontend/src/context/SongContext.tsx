@@ -51,7 +51,7 @@ interface SongProviderProps {
   children: ReactNode;
 }
 
-export const SongProvider: React.FC<SongProviderProps> = ({ children }) => {
+export const SongProvider: React.FC<SongProviderProps> = ({ children }) => {   
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedSong, setSelectedSong] = useState<string | null>(null);
@@ -141,7 +141,16 @@ export const SongProvider: React.FC<SongProviderProps> = ({ children }) => {
   useEffect(() => {
     fetchSongs();
     fetchAlbums();
-  }, []);
+  }, [setSelectedSong]);
+
+
+  useEffect(() => {
+    if (selectedSong) {
+      const newIndex = songs.findIndex((s) => s.id === selectedSong);
+      if (newIndex !== -1) setIndex(newIndex);
+    }
+  }, [selectedSong, songs]);
+  
   return (
     <SongContext.Provider
       value={{

@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSongData } from "../context/SongContext";
 import { GrChapterNext, GrChapterPrevious } from "react-icons/gr";
 import { FaPause, FaPlay } from "react-icons/fa";
+import { useUserData } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const Player = () => {
   const {
@@ -13,7 +15,8 @@ const Player = () => {
     prevSong,
     nextSong,
   } = useSongData();
-
+   const {isAuth} = useUserData();
+   const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [volume, setVolume] = useState<number>(1);
@@ -40,9 +43,15 @@ const Player = () => {
       audio.removeEventListener("loadedmetadata", handleLoadedMetaData);
       audio.removeEventListener("timeupdate", handleTimeUpdate);
     };
-  }, [song]);
+  }, [isPlaying,song]);
 
   const handlePlayPause = () => {
+    if(!isAuth)
+    {
+      navigate("login");
+      return;
+    }
+
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -68,13 +77,44 @@ const Player = () => {
     }
     setProgress(newTime);
   };
+ 
+  useEffect(() => {
+    const audio = audioRef.current;
+  
+    if (audio && song?.audio) {
+      const handleCanPlay = () => {
+        audio.currentTime = 0;
+        if (isPlaying) {
+          audio
+            .play()
+            .catch((err) => {
+              console.error("Audio playback failed:", err);
+            });
+        }
+      };
+  
+      audio.load();
+      audio.addEventListener("loadeddata", handleCanPlay);
+  
+      return () => {
+        audio.removeEventListener("loadeddata", handleCanPlay);
+      };
+    }
+  }, [song?.audio]);
+  
+  
 
   useEffect(() => {
-    fetchSingleSong();
+    fetchSingleSong().then(() => {
+      if (isPlaying && audioRef.current) {
+        audioRef.current.play().catch((err) => console.log(err));
+      }
+    });
   }, [selectedSong]);
+  
   return (
     <div>
-      {song && (
+      {song &&  (
         <div className="h-[10%] bg-black flex justify-between items-center text-white px-4">
           <div className="lg:flex items-center gap-4">
             <img

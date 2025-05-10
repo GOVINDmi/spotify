@@ -3,6 +3,7 @@ import { User } from "./model.js";
 import TryCatch from "./TryCatch.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Playlist } from "./playlistmodel.js";
 
 
 
@@ -87,46 +88,29 @@ export const loginUser = TryCatch(async (req, res) => {
 
 export const myProfile = TryCatch(async (req: AuthenticatedRequest, res) => {
   const user = req.user;
+  console.log(user);
 
   res.json(user);
 });
 
-export const addToPlaylist = TryCatch(
-  async (req: AuthenticatedRequest, res) => {
-    const userId = req.user?._id;
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      res.status(404).json({
-        message: "NO user with this id",
-      });
-      return;
-    }
-
-    if (user?.playlist.includes(req.params.id)) {
-      const index = user.playlist.indexOf(req.params.id);
-
-      user.playlist.splice(index, 1);
-
-      await user.save();
-
-      res.json({
-        message: " Removed from playlist",
-      });
-      return;
-    }
-
-    user.playlist.push(req.params.id);
-
-    await user.save();
-
-    res.json({
-      message: "Added to PlayList",
-    });
+export const addSongToPlaylist = TryCatch(async (req: AuthenticatedRequest, res: any) => {
+  const { playlistId, songId } = req.params;
+  const pl = await Playlist.findOne({ _id: playlistId, user: req.user!._id });
+  if (!pl) {
+    return res.status(404).json({ message: "Playlist not found" });
   }
-);
 
+  const index = pl.songs.indexOf(songId);
+  if (index === -1) {
+    pl.songs.push(songId);
+    await pl.save();
+    return res.json({ message: "Song added", playlist: pl });
+  } else {
+    pl.songs.splice(index, 1);
+    await pl.save();
+    return res.json({ message: "Song removed", playlist: pl });
+  }
+});
 
 export const logout = TryCatch(async(requestAnimationFrame,res)=>{
   res.clearCookie("token", {
@@ -143,3 +127,21 @@ export const logout = TryCatch(async(requestAnimationFrame,res)=>{
 
 });
 
+export const createPlaylist = TryCatch(async (req: AuthenticatedRequest, res: any) => {
+  const { name } = req.body;
+  const userId = req.user!._id;
+  const existing = await Playlist.findOne({ user: userId, name });
+  if (existing) {
+    return res.status(400).json({ message: "Playlist already exists" });
+  }
+
+  const pl = await Playlist.create({ name, user: userId, songs: [] });
+  res.status(201).json(pl);
+});
+
+// Get all playlists for the authenticated user
+export const getPlaylists = TryCatch(async (req: AuthenticatedRequest, res: any) => {
+  const userId = req.user!._id;
+  const lists = await Playlist.find({ user: userId });
+  res.json(lists);
+});

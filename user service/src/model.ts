@@ -1,43 +1,38 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema,Types } from "mongoose";
+
+// model.ts
+export interface IPlaylist {
+  _id: Types.ObjectId;
+  name: string;
+  songs: string[];    // array of song IDs
+  createdAt: Date;
+}
 
 export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
   role: string;
-  playlist: string[];
+  playlists: IPlaylist[];
 }
 
-const schema: Schema<IUser> = new Schema(
+const playlistSchema = new Schema<IPlaylist>(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    role: {
-      type: String,
-      default: "user",
-    },
-
-    playlist: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    name: { type: String, required: true },
+    songs: [{ type: String, required: true }],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-export const User = mongoose.model<IUser>("User", schema);
+const userSchema = new Schema<IUser>(
+  {
+    name: String,
+    email: { type: String, unique: true },
+    password: String,
+    role: { type: String, default: "user" },
+    playlists: [playlistSchema],
+  },
+  { timestamps: true }
+);
+
+export const User = mongoose.model<IUser>("User", userSchema);

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import Loading from "../components/Loading";
 import { FaBookmark, FaPlay } from "react-icons/fa";
 import { useUserData } from "../context/UserContext";
+import { useState } from "react";
 
 const Album = () => {
   const {
@@ -16,7 +17,9 @@ const Album = () => {
     loading,
   } = useSongData();
 
-  const { isAuth, addToPlaylist } = useUserData();
+  const { isAuth, addToPlaylist,playlists,addSongToPlaylist } = useUserData();
+
+  const [showMenu, setShowMenu] = useState(false);
 
   const params = useParams<{ id: string }>();
 
@@ -73,7 +76,7 @@ const Album = () => {
                     return (
                       <div
                         className="grid grid-cols-3 sm:grid-cols-4 mt-10 mb-4 pl-2 text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
-                        key={index}
+                        key={index} 
                       >
                         <p className="text-white">
                           <b className="mr-4 text-[#a7a7a7]">{index + 1}</b>
@@ -93,12 +96,13 @@ const Album = () => {
                           {isAuth && (
                             <button
                               className="text-[15px] text-center"
-                              onClick={() => addToPlaylist(song.id)}
+                              onClick={() => setShowMenu((v) => !v)}
                             >
                               <FaBookmark />
                             </button>
                           )}
-                          <button
+                         
+                            <button
                             className="text-[15px] text-center"
                             onClick={() => {
                               setSelectedSong(song.id);
@@ -107,6 +111,22 @@ const Album = () => {
                           >
                             <FaPlay />
                           </button>
+                          {showMenu && (
+                      <div className="absolute bg-black p-2 rounded">
+                        {playlists.map((pl) => (
+                          <div
+                            key={pl._id}
+                            className="p-1 hover:bg-gray-700 cursor-pointer"
+                            onClick={() => {
+                              addSongToPlaylist(pl._id, song.id);
+                              setShowMenu(false);
+                            }}
+                          >
+                            {pl.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                         </p>
                       </div>
                     );

@@ -11,6 +11,11 @@ export interface User {
   role: string;
   playlist: string[];
 }
+export interface Playlist {
+  _id: string;
+  name: string;
+  songs: string[];
+}
 
 interface UserContextType {
   user: User | null;
@@ -31,6 +36,10 @@ interface UserContextType {
   addToPlaylist: (id: string) => void;
   logoutUser: () => Promise<void>;
   fetchUser: () => Promise<void>;  // 🛠️ ADD this line
+  playlists: Playlist[];
+  fetchPlaylists: () => Promise<void>;
+  createPlaylist: (name: string) => Promise<void>;
+  addSongToPlaylist: (playlistId: string, songId: string) => Promise<void>;
 }
 
 
@@ -45,6 +54,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
   async function registerUser(
     name: string,
@@ -124,6 +134,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
     setUser(null);
     setIsAuth(false);
+    setPlaylists([]);
     toast.success("User Logged Out");
   }
 
@@ -144,9 +155,39 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   }
 
+  
+  const fetchPlaylists = async () => {
+    const { data } = await axios.get<Playlist[]>(`${server}/api/v1/playlists`, { withCredentials: true });
+    setPlaylists(data);
+  };
+
+  const createPlaylist = async (name: string) => {
+    const { data } = await axios.post<Playlist>(
+      `${server}/api/v1/playlists`,
+      { name },
+      { withCredentials: true }
+    );
+    setPlaylists((prev) => [...prev, data]);
+    toast.success(`Playlist "${name}" created`);
+  };
+
+  const addSongToPlaylist = async (playlistId: string, songId: string) => {
+    await axios.post(
+      `${server}/api/v1/playlists/${playlistId}/songs/${songId}`,
+      {},
+      { withCredentials: true }
+    );
+    toast.success("Song added to playlist");
+    // optionally refresh playlists:
+    fetchPlaylists();
+  };
+
   useEffect(() => {
     fetchUser();
-  }, []);
+    fetchPlaylists();
+    console.log(playlists);
+  }, [isAuth]);
+
 
   return (
     <UserContext.Provider
@@ -160,6 +201,10 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       logoutUser,
       addToPlaylist,
       fetchUser,  // 🛠️ ADD this here
+      playlists,
+      fetchPlaylists,
+      createPlaylist,
+      addSongToPlaylist,
     }}
   >
       {children}

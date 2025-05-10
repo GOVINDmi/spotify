@@ -30,7 +30,7 @@ export const isAuth = async (
       res.status(403).json({ message: "Please Login" });
       return;
     }
-
+    console.log(token);
     const { data } = await axios.get(`${process.env.USER_URL}/api/v1/user/me`, {
       headers: { cookie: `token=${token}` }, // pass token cookie to user service
     });

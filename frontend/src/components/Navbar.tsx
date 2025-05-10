@@ -3,10 +3,11 @@ import { useUserData } from "../context/UserContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { isAuth, logoutUser } = useUserData();
+  const { isAuth, logoutUser,} = useUserData();
 
   const logoutUserHanlder = () => {
     logoutUser();
+    navigate('/');
   };
   return (
     <>

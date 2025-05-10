@@ -22,7 +22,7 @@ const App = () => {
             <Route path="/album/:id" element={isAuth ? <Album /> : <Login/>} />
             <Route path="/search" element={isAuth ? <SearchPage /> : <Login/>} />
             <Route
-              path="/playlist"
+              path="/playlist/:id"
               element={isAuth ? <PlayList /> : <Login />}
             />
             <Route

@@ -17,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {children}
         </div>
       </div>
-      <Player />
+      <Player/>
     </div>
   );
 };

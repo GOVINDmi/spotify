@@ -23,6 +23,7 @@ export const getAllAlbum = TryCatch(async (req, res) => {
         EX: CACHE_EXPIRY,
       });
     }
+    console.log(albums);
 
     res.json(albums);
     return;
