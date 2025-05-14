@@ -23,7 +23,7 @@ redisClient
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://spotify-w7e.pages.dev',
   credentials: true
 }));
 app.use(cookieParser());

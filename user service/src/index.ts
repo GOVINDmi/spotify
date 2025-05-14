@@ -23,7 +23,7 @@ const connectDb = async () => {
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://spotify-w7e.pages.dev',
   credentials: true
 }));
 app.use(cookieParser());
@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
   res.send("Server is working");
 });
 
-const port = process.env.PORT || 5000;
+const port = 5000;
 
 app.listen(5000, () => {
   console.log(`Server is running on port ${port}`);

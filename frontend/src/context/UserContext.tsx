@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
-const server = "http://localhost:5000";
+const server = "https://my-user-service.onrender.com";
 
 export interface User {
   _id: string;

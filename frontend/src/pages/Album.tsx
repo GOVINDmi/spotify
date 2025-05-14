@@ -17,7 +17,7 @@ const Album = () => {
     loading,
   } = useSongData();
 
-  const { isAuth, addToPlaylist,playlists,addSongToPlaylist } = useUserData();
+  const { isAuth,playlists,addSongToPlaylist } = useUserData();
 
   const [showMenu, setShowMenu] = useState(false);
 

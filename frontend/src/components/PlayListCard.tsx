@@ -5,7 +5,7 @@ interface PlayListCardProps {
   playlist: Playlist;
 }
 
-const PlayListCard: React.FC<PlayListCardProps> = ({ playlist }) => {
+const PlayListCard: React.FC<PlayListCardProps> = () => {
   const { user, isAuth, playlists } = useUserData();
 
   return (

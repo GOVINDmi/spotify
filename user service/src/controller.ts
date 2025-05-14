@@ -35,8 +35,8 @@ export const registerUser = TryCatch(async (req, res) => {
   .status(201)
   .cookie("token", token, {
     httpOnly: true,
-    secure: false, // only HTTPS in prod
-    sameSite: "lax", // or 'none' if frontend and backend are on different domains
+    secure: true, // only HTTPS in prod
+    sameSite: "none", // or 'none' if frontend and backend are on different domains
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   })
   .json({
@@ -75,8 +75,8 @@ export const loginUser = TryCatch(async (req, res) => {
   .status(200)
   .cookie("token", token, {
     httpOnly: true,
-    secure: false, // only HTTPS in prod
-    sameSite: "lax", // or 'none' if frontend and backend are on different domains
+    secure: true, // only HTTPS in prod
+    sameSite: "none", // or 'none' if frontend and backend are on different domains
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   })
   .json({
@@ -115,8 +115,8 @@ export const addSongToPlaylist = TryCatch(async (req: AuthenticatedRequest, res:
 export const logout = TryCatch(async(requestAnimationFrame,res)=>{
   res.clearCookie("token", {
     httpOnly: true,   // Make sure cookie is not accessible via JavaScript
-    secure: process.env.NODE_ENV === "production",  // Only send over HTTPS in production
-    sameSite: "lax", // Prevent cross-site requests
+    secure: true,  // Only send over HTTPS in production
+    sameSite: "none", // Prevent cross-site requests
     path: "/",
   });
 
