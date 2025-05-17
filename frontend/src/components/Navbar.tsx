@@ -1,9 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { useUserData } from "../context/UserContext";
+//import { useState } from "react";
 
-const Navbar = () => {
+  interface NavbarProps {
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ setIsSidebarOpen }) => {
   const navigate = useNavigate();
   const { isAuth, logoutUser,} = useUserData();
+
+
+
 
   const logoutUserHanlder = () => {
     logoutUser();
@@ -13,6 +21,14 @@ const Navbar = () => {
     <>
       <div className="w-full flex justify-between items-center font-semibold">
         <div className="flex items-center gap-2">
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsSidebarOpen(prev => !prev)}
+            className="md:hidden p-2"
+          >
+            <img src="/icons8-hamburger-menu-32.png" className="w-6" alt="Menu" />
+          </button>
+          {/* Existing arrow buttons */}
           <img
             src="/left_arrow.png"
             className="w-8 bg-black p-2 rounded-2xl cursor-pointer"
@@ -26,7 +42,7 @@ const Navbar = () => {
             alt=""
           />
         </div>
-        <div className="flex items-center gap-4">
+         <div className="flex items-center gap-4 justify-end">
           <p className="px-4 py-1 cursor-pointer bg-white text-black text-[15px] rounded-full hidden md:block">
             Explore Premium
           </p>

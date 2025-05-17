@@ -3,11 +3,20 @@ import PlayListCard from "./PlayListCard";
 import { useUserData } from "../context/UserContext";
 import { useState } from "react";
 
-const Sidebar = () => {
+interface SidebarProps {
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ setIsSidebarOpen }) => {
   const navigate = useNavigate();
   const { user } = useUserData();
   const { playlists, createPlaylist,isAuth } = useUserData();
   const [newName, setNewName] = useState("");
+
+    const handleNavigate = (path: string) => {
+    navigate(path);
+    setIsSidebarOpen(false);
+  };
 
   const handleCreate = () => {
     if(!isAuth)
@@ -22,17 +31,19 @@ const Sidebar = () => {
     }
   };
   return (
-    <div className="w-[25%] h-full p-2 flex-col gap-2 text-white hidden lg:flex">
+
+          <div className="w-[250px] h-full p-2 flex-col gap-2 text-white bg-[#000000]">
       <div className="bg-[#121212] h-[15%] rounded flex flex-col justify-around">
         <div
           className="flex items-center gap-3 pl-8 cursor-pointer"
-          onClick={() => navigate("/")}
+          onClick={() => handleNavigate("/")}
         >
           <img src="/home.png" alt="" className="w-6" />
           <p className="font-bold">Home</p>
         </div>
-        <div className="flex items-center gap-3 pl-8 cursor-pointer"
-             onClick={() => navigate("/search")}
+        <div 
+          className="flex items-center gap-3 pl-8 cursor-pointer"
+          onClick={() => handleNavigate("/search")}
         >
           <img src="/search.png" alt="" className="w-6" />
           <p className="font-bold">Search</p>
@@ -89,6 +100,8 @@ const Sidebar = () => {
         )}
       </div>
     </div>
+  
+    
   );
 };
 
