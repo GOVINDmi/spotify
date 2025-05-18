@@ -9,9 +9,9 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 
 export const redisClient = redis.createClient({
-  password: process.env.Redis_Password,
+  password: process.env.Redis_Password!,
   socket: {
-    host: "redis-13897.c212.ap-south-1-1.ec2.redns.redis-cloud.com",
+    host: process.env.Redis_Host!,
     port: 13897,
   },
 });
