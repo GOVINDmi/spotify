@@ -4,10 +4,28 @@ import TryCatch from "./TryCatch.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Playlist } from "./playlistmodel.js";
+import { rateLimit } from "./ratelimt.js";
+
 
 
 
 export const registerUser = TryCatch(async (req, res) => {
+
+  const ip = (
+  req.headers["x-forwarded-for"] as string
+)?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+
+
+  const { success, retryAfter } = await rateLimit(ip, 5, 3*60); // 5 requests per 60 sec
+
+  if (!success) {
+  res.status(429).json({
+    message: `Too many login attempts. Try again in ${retryAfter} seconds.`,
+  });
+  return;
+}
+
+
   const { name, email, password } = req.body;
   let user = await User.findOne({ email });
 
@@ -47,6 +65,21 @@ export const registerUser = TryCatch(async (req, res) => {
 });
 
 export const loginUser = TryCatch(async (req, res) => {
+
+ const ip = (
+  req.headers["x-forwarded-for"] as string
+)?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+
+
+  const { success, retryAfter } = await rateLimit(ip, 5, 3*60); // 5 requests per 60 sec
+
+  if (!success) {
+  res.status(429).json({
+    message: `Too many login attempts. Try again in ${retryAfter} seconds.`,
+  });
+  return;
+}
+
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });

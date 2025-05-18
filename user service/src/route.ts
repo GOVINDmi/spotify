@@ -10,6 +10,7 @@ import {
 } from "./controller.js";
 import { isAuth } from "./middleware.js";
 
+
 const router = express.Router();
 
 router.post("/user/register", registerUser);

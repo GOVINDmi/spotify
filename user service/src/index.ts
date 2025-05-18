@@ -6,6 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 
+
 dotenv.config();
 
 const connectDb = async () => {
@@ -19,6 +20,10 @@ const connectDb = async () => {
     console.log(error);
   }
 };
+
+
+
+
 
 const app = express();
 
