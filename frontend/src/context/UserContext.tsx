@@ -78,10 +78,22 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       setBtnLoading(false);
       navigate("/");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "An error occured");
-      setBtnLoading(false);
+    setBtnLoading(false);
+
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const message = error.response?.data?.message;
+
+      if (status === 429) {
+        toast.error(message || "Too many requests. Please try again later.");
+      } else {
+        toast.error(message || "An error occurred.");
+      }
+    } else {
+      toast.error("Unexpected error. Please try again.");
     }
   }
+}
 
   async function loginUser(
     email: string,
@@ -103,10 +115,22 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       setBtnLoading(false);
       navigate("/");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "An error occured");
-      setBtnLoading(false);
+    setBtnLoading(false);
+
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const message = error.response?.data?.message;
+
+      if (status === 429) {
+        toast.error(message || "Too many requests. Please try again later.");
+      } else {
+        toast.error(message || "An error occurred.");
+      }
+    } else {
+      toast.error("Unexpected error. Please try again.");
     }
   }
+}
 
   async function fetchUser() {
     try {
